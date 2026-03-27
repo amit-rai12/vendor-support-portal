@@ -26,7 +26,7 @@ const DataService = (function () {
   // ── Fetch from local vendor_data.json ──
   async function fetchLocalJson(sheetKey) {
     try {
-      const resp = await fetch('vendor_data.json');
+      const resp = await fetch('vendor_data.json?t=' + new Date().getTime()); // Prevent caching
       const json = await resp.json();
       // sheetKey maps: "FINAL_LIST" → "vendor_list", "TICKETS" → "tickets"
       const keyMap = { 'FINAL_LIST': 'vendor_list', 'TICKETS': 'tickets' };
@@ -36,51 +36,6 @@ const DataService = (function () {
       console.warn('Failed to load vendor_data.json:', e.message);
       return null;
     }
-  }
-
-  // ── Fetch sheet data via Google Sheets published CSV/JSON ──
-  // The sheet must be "Published to the web" (File > Share > Publish to web)
-  // This uses the Google Visualization API query endpoint.
-  // Falls back to local vendor_data.json if the sheet is unreachable.
-  async function fetchSheetData(sheetName) {
-    const config = await loadConfig();
-    const sheetId = config.google_sheet_id;
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-
-    try {
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const text = await resp.text();
-      // Google wraps the JSON in a callback — strip it
-      const jsonStr = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
-      if (!jsonStr) throw new Error('Unexpected response format');
-      const json = JSON.parse(jsonStr[1]);
-      const parsed = _parseGvizTable(json.table);
-      if (parsed && parsed.length > 1) return parsed;
-      throw new Error('Empty result from sheet');
-    } catch (e) {
-      console.warn(`Google Sheet "${sheetName}" unavailable (${e.message}), trying local JSON…`);
-      // Fallback → vendor_data.json
-      const localData = await fetchLocalJson(sheetName);
-      if (localData && localData.length > 1) {
-        console.log(`Loaded "${sheetName}" from vendor_data.json (${localData.length - 1} rows)`);
-        return localData;
-      }
-      return null;
-    }
-  }
-
-  // Parse GViz table format into array of arrays
-  function _parseGvizTable(table) {
-    if (!table || !table.rows) return [];
-    const headers = table.cols.map(c => c.label || '');
-    const rows = table.rows.map(row =>
-      row.c.map(cell => {
-        if (!cell) return '';
-        return cell.v != null ? cell.v : (cell.f || '');
-      })
-    );
-    return [headers, ...rows];
   }
 
   // ── Lookup Vendor (mirrors Apps Script lookupVendor) ──
@@ -93,21 +48,10 @@ const DataService = (function () {
     const query = vendorCode.trim().toUpperCase();
     const isCodeSearch = /^1N/i.test(query) || /^\d{5,}$/.test(query);
 
-    // Fetch vendor data from sheet
-    let data = await fetchSheetData(config.sheets.vendor_list);
+    // Fetch vendor data from local JSON
+    let data = await fetchLocalJson('vendor_list');
     if (!data || data.length <= 1) {
-      // Try localStorage fallback
-      const cached = localStorage.getItem('vendor_cache');
-      if (cached) {
-        data = JSON.parse(cached);
-        console.log('Using cached vendor data');
-      } else {
-        return { error: 'Could not connect to data source. Please ensure the Google Sheet is published to the web.' };
-      }
-    } else {
-      // Cache successful fetch
-      localStorage.setItem('vendor_cache', JSON.stringify(data));
-      localStorage.setItem('vendor_cache_time', new Date().toISOString());
+      return { error: 'Could not connect to data source. Please ensure vendor_data.json is updated.' };
     }
 
     VENDOR_DATA = data;
@@ -178,13 +122,7 @@ const DataService = (function () {
     // Fetch tickets
     let tickets = [];
     try {
-      let ticketData = await fetchSheetData(config.sheets.tickets);
-      if (!ticketData || ticketData.length <= 1) {
-        const cached = localStorage.getItem('ticket_cache');
-        if (cached) ticketData = JSON.parse(cached);
-      } else {
-        localStorage.setItem('ticket_cache', JSON.stringify(ticketData));
-      }
+      let ticketData = await fetchLocalJson('tickets');
 
       if (ticketData && ticketData.length > 1) {
         TICKET_DATA = ticketData;
