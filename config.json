@@ -1,0 +1,53 @@
+{
+  "google_sheet_id": "1xWn-dKaCdnhOif1Et-9vCzXkHkdkus4VHI9tjuG5WoQ",
+  "access_password": "SwiggyVendor2026",
+  "sheets": {
+    "vendor_list": "FINAL_LIST",
+    "tickets": "TICKETS"
+  },
+  "brand_scm_map": {
+    "COCA-COLA INDIA": { "poc": "Alok", "email": "alok.kullu@swiggy.in", "phone": "8971608752" },
+    "PEPSICO INDIA BEVERAGES": { "poc": "Alok", "email": "alok.kullu@swiggy.in", "phone": "8971608752" },
+    "ITC LIMITED": { "poc": "Amit Singh", "email": "amit.singh5@scootsy.com", "phone": "7836810093" },
+    "HALDIRAM SNACKS FOOD PRIVATE LIMITED": { "poc": "Amit Singh", "email": "amit.singh5@scootsy.com", "phone": "7836810093" },
+    "PEPSICO INDIA FOOD": { "poc": "Amit Singh", "email": "amit.singh5@scootsy.com", "phone": "7836810093" },
+    "HINDUSTAN UNILEVER LIMITED": { "poc": "Bhargavi", "email": "bhargavi.mupparam@swiggy.in", "phone": "7483181045" },
+    "RECKITT BENCKISER INDIA PVT LTD": { "poc": "Bhargavi", "email": "bhargavi.mupparam@swiggy.in", "phone": "7483181045" },
+    "PARLE PRODUCTS PVT. LTD": { "poc": "Inzamam", "email": "mohammed.1@swiggy.in", "phone": "9583220544" },
+    "BRITANNIA INDUSTRIES LIMITED": { "poc": "Inzamam", "email": "mohammed.1@swiggy.in", "phone": "9583220544" },
+    "MARICO LIMITED": { "poc": "Inzamam", "email": "mohammed.1@swiggy.in", "phone": "9583220544" },
+    "ITC LIMITED - CIGARETTES": { "poc": "Prajwal", "email": "prajwal.s1@scootsy.com", "phone": "7090920924" },
+    "GODFREY PHILLIPS INDIA LIMITED": { "poc": "Prajwal", "email": "prajwal.s1@scootsy.com", "phone": "7090920924" },
+    "HAPPILO INTERNATIONAL PVT LTD": { "poc": "Shiva", "email": "sivashankar.v@scootsy.com", "phone": "7013147779" },
+    "TATA CONSUMER PRODUCTS LTD": { "poc": "Shiva", "email": "sivashankar.v@scootsy.com", "phone": "7013147779" },
+    "CONNEDIT SOLUTION PVT LTD": { "poc": "Shiva", "email": "sivashankar.v@scootsy.com", "phone": "7013147779" },
+    "LT FOODS LTD": { "poc": "Shiva", "email": "sivashankar.v@scootsy.com", "phone": "7013147779" },
+    "MONDELEZ INDIA FOODS PRIVATE LIMITED": { "poc": "Swetha", "email": "swetha.2@scootsy.com", "phone": "9008839881" },
+    "NESTLE INDIA LTD": { "poc": "Swetha", "email": "swetha.2@scootsy.com", "phone": "9008839881" },
+    "MARS COSMETICS PVT. LTD.": { "poc": "Vinay", "email": "yerigeri.k@scootsy.com", "phone": "8088999310" },
+    "SCOOTSY LOGISTICS PRIVATE LIMITED- Noice": { "poc": "Praveen", "email": "", "phone": "" }
+  },
+  "ticket_categories": [
+    "PO_ISSUE",
+    "GRN_ISSUE",
+    "PAYMENT",
+    "MARGIN",
+    "APPOINTMENT",
+    "DN_PICKUP",
+    "QUALITY",
+    "STOCK_OUT",
+    "OTHER"
+  ],
+  "sla_hours": {
+    "P1": 4,
+    "P2": 12,
+    "P3": 24,
+    "P4": 48
+  },
+  "emailjs": {
+    "enabled": false,
+    "service_id": "YOUR_EMAILJS_SERVICE_ID",
+    "template_id": "YOUR_EMAILJS_TEMPLATE_ID",
+    "public_key": "YOUR_EMAILJS_PUBLIC_KEY"
+  }
+}

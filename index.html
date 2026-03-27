@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Swiggy Instamart Vendor Support Portal — Look up your POC or raise a support ticket">
+  <title>Swiggy Instamart — Vendor Support Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ═══════════════════════ HEADER ═══════════════════════ -->
+  <header class="header" id="header">
+    <div class="header__glow"></div>
+    <div class="header__content">
+      <div class="header__logo">
+        <div class="header__logo-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="14" stroke="white" stroke-width="2" opacity="0.3"/>
+            <path d="M10 18C10 14 13 10 16 10C19 10 22 14 22 18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="16" cy="20" r="2" fill="white"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="header__title">Swiggy Instamart</h1>
+          <p class="header__subtitle">Vendor Support Portal</p>
+        </div>
+      </div>
+      <div class="header__stats" id="headerStats">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════ AUTH GATE ═══════════════════════ -->
+  <div id="authGate" class="auth-gate">
+    <div class="auth-gate__card">
+      <div class="auth-gate__icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </div>
+      <h2>Vendor Access</h2>
+      <p>Enter your Vendor Code or Access Password to continue.</p>
+      <div class="auth-gate__form">
+        <input type="text" id="authInput" class="form-input" placeholder="Vendor Code (e.g. 1N60000030) or Password" autocomplete="off">
+        <button id="authBtn" class="btn btn--primary btn--lg" style="width:100%;margin-top:8px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Enter Portal
+        </button>
+      </div>
+      <div id="authError"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ MAIN CONTAINER ═══════════════════════ -->
+  <main class="main">
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-card">
+        <div class="search-card__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-card__input" 
+          placeholder="Enter Vendor Code (1N60000030) or Name (ITC, Amul...)" 
+          autocomplete="off"
+        >
+        <button id="searchBtn" class="search-card__btn">
+          <span>Search</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" id="tabNav">
+      <button class="tab-nav__btn active" data-tab="lookup">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>POC Lookup</span>
+      </button>
+      <button class="tab-nav__btn" data-tab="ticket">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="12" y1="18" x2="12" y2="12"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+        </svg>
+        <span>Raise Ticket</span>
+      </button>
+      <button class="tab-nav__btn" data-tab="mytickets">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span>My Tickets</span>
+        <span class="tab-nav__badge" id="ticketBadge" style="display:none">0</span>
+      </button>
+    </nav>
+
+    <!-- ═══════════════ TAB: POC LOOKUP ═══════════════ -->
+    <section id="lookup" class="tab-panel active">
+      <div id="results">
+        <div class="empty-state">
+          <div class="empty-state__icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <h3>Search for a Vendor</h3>
+          <p>Enter a vendor code or company name above to find POC details across cities.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ TAB: RAISE TICKET ═══════════════ -->
+    <section id="ticket" class="tab-panel">
+      <div class="card ticket-form-card">
+        <div class="card__header">
+          <h2 class="card__title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/>
+              <line x1="9" y1="15" x2="15" y2="15"/>
+            </svg>
+            Raise a Support Ticket
+          </h2>
+          <p class="card__subtitle">Fill in the details below. Your ticket will be assigned to the relevant POC.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="fEmail">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,7 12,13 2,7"/></svg>
+              Your Email
+            </label>
+            <input type="email" id="fEmail" class="form-input" placeholder="your.name@company.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="fCity">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              City
+            </label>
+            <select id="fCity" class="form-select">
+              <option value="">Search vendor first</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="fCat">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Category
+            </label>
+            <select id="fCat" class="form-select">
+              <option value="">Select category...</option>
+              <option>PO_ISSUE</option>
+              <option>GRN_ISSUE</option>
+              <option>PAYMENT</option>
+              <option>MARGIN</option>
+              <option>APPOINTMENT</option>
+              <option>DN_PICKUP</option>
+              <option>QUALITY</option>
+              <option>STOCK_OUT</option>
+              <option>OTHER</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="fPri">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Priority
+            </label>
+            <select id="fPri" class="form-select">
+              <option value="P3">P3 — Medium (24h SLA)</option>
+              <option value="P1">P1 — Critical (4h SLA)</option>
+              <option value="P2">P2 — High (12h SLA)</option>
+              <option value="P4">P4 — Low (48h SLA)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:4px">
+          <label class="form-label" for="fSubj">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+            Subject
+          </label>
+          <input type="text" id="fSubj" class="form-input" placeholder="Brief description of the issue">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fDesc">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Description
+          </label>
+          <textarea id="fDesc" class="form-textarea" placeholder="Provide details — PO numbers, SKU codes, amounts, etc."></textarea>
+        </div>
+
+        <button id="submitBtn" class="btn btn--primary btn--lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Submit Ticket
+        </button>
+
+        <div id="ticketMsg"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ TAB: MY TICKETS ═══════════════ -->
+    <section id="mytickets" class="tab-panel">
+      <div id="ticketList">
+        <div class="empty-state">
+          <div class="empty-state__icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <h3>No Tickets Yet</h3>
+          <p>Search for a vendor first, then raise a ticket from the "Raise Ticket" tab.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+  <footer class="footer">
+    <p>&copy; 2026 Swiggy Instamart — SCM Vendor Support</p>
+  </footer>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
