@@ -43,10 +43,5 @@
     "P3": 24,
     "P4": 48
   },
-  "emailjs": {
-    "enabled": false,
-    "service_id": "YOUR_EMAILJS_SERVICE_ID",
-    "template_id": "YOUR_EMAILJS_TEMPLATE_ID",
-    "public_key": "YOUR_EMAILJS_PUBLIC_KEY"
-  }
+  "backend_url": "https://script.google.com/a/macros/scootsy.com/s/AKfycbxT1nAQL3cQVkCFY5u6GH1epTD0mPNl8M3UHZeJ4wI_buhaDwNbpC91WbA9SBHqI2ha/exec"
 }

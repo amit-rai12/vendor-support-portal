@@ -203,13 +203,41 @@ const DataService = (function () {
       raiser_email: raiserEmail || 'portal'
     };
 
-    // Save to localStorage
+    const payload = {
+      ticket_id: ticketId,
+      timestamp: ticket.timestamp,
+      vendor_code: vendorCode,
+      supplier_name: ticket.supplier_name,
+      city: ticket.city,
+      category: category,
+      subject: subject,
+      description: description,
+      priority: ticket.priority,
+      brand_scm: lookup.brand_scm ? lookup.brand_scm.poc : '',
+      poc_email: lookup.brand_scm ? lookup.brand_scm.email : '',
+      raiser_email: ticket.raiser_email
+    };
+
+    // Save fallback locally just in case
     const stored = JSON.parse(localStorage.getItem('local_tickets') || '[]');
     stored.push(ticket);
     localStorage.setItem('local_tickets', JSON.stringify(stored));
 
-    // Send email notification via EmailJS (if configured)
-    await _sendTicketEmail(ticket, config);
+    try {
+      if (config.backend_url && config.backend_url !== "YOUR_APPS_SCRIPT_WEB_APP_URL") {
+        await fetch(config.backend_url, {
+          method: 'POST',
+          mode: 'no-cors', // Apps Script requires no-cors without preflight sometimes, though no-cors hides response
+          // We'll use text/plain so it doesn't trigger CORS preflight OPTIONS request
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        console.warn("Backend URL not configured, ticket only saved locally.");
+      }
+    } catch (e) {
+      console.warn('Failed to send ticket to backend:', e);
+    }
 
     return {
       success: true,
@@ -217,54 +245,6 @@ const DataService = (function () {
       city: v.city,
       poc: v.poc_name
     };
-  }
-
-  // ── Send ticket confirmation email via EmailJS ──
-  async function _sendTicketEmail(ticket, config) {
-    try {
-      const emailCfg = config.emailjs;
-      if (!emailCfg || !emailCfg.enabled || emailCfg.service_id === 'YOUR_EMAILJS_SERVICE_ID') {
-        console.log('EmailJS not configured — skipping email notification');
-        return;
-      }
-
-      if (typeof emailjs === 'undefined') {
-        console.warn('EmailJS SDK not loaded');
-        return;
-      }
-
-      const slaMap = config.sla_hours || { P1: 4, P2: 12, P3: 24, P4: 48 };
-      const slaHours = slaMap[ticket.priority] || 24;
-
-      const templateParams = {
-        ticket_id: ticket.ticket_id,
-        to_email: ticket.raiser_email,
-        poc_email: ticket.assigned_email,
-        supplier_name: ticket.supplier_name,
-        vendor_code: ticket.vendor_code,
-        city: ticket.city,
-        zone: ticket.zone,
-        category: ticket.category,
-        priority: ticket.priority,
-        subject: ticket.subject,
-        description: ticket.description,
-        assigned_to: ticket.assigned_to,
-        assigned_email: ticket.assigned_email,
-        l1_name: ticket.l1_name,
-        l1_email: ticket.l1_email,
-        sla_hours: slaHours + ' hours'
-      };
-
-      await emailjs.send(
-        emailCfg.service_id,
-        emailCfg.template_id,
-        templateParams,
-        emailCfg.public_key
-      );
-      console.log('Ticket email sent successfully');
-    } catch (e) {
-      console.warn('Email notification failed (non-blocking):', e.message || e);
-    }
   }
 
   // Get locally raised tickets matching the search
