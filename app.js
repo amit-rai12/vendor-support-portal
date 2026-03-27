@@ -36,6 +36,9 @@
 
     if (sessionStorage.getItem('vendor_auth') === 'true') {
       authGate.classList.add('hidden');
+      const q = sessionStorage.getItem('vendor_auth_query') || '';
+      const v = sessionStorage.getItem('vendor_auth_is_vendor') === 'true';
+      _applyAuthRole(q, v);
     }
 
     // Tab switching
@@ -78,13 +81,13 @@
         lowerVal.endsWith('@scootsy.com') ||
         lowerVal.endsWith('@external.swiggy.in')
       ) {
-        loginSuccess();
+        loginSuccess(val, false);
         return;
       }
 
       // 2. Check Access Password
       if (config.access_password && val === config.access_password) {
-        loginSuccess();
+        loginSuccess('', false);
         return;
       }
 
@@ -92,8 +95,8 @@
       // Since it's a valid code/name, lookupVendor will find it
       const testLookup = await DataService.lookupVendor(val);
       if (!testLookup.error) {
-        // Find it successfully, enter portal and auto-search
-        loginSuccess(val);
+        // Find it successfully, enter portal and auto-search uniquely
+        loginSuccess(val, true);
         return;
       }
 
@@ -109,17 +112,28 @@
     }
   }
 
-  function loginSuccess(autoSearchQuery = '') {
+  function loginSuccess(autoSearchQuery = '', isVendorOnly = false) {
     sessionStorage.setItem('vendor_auth', 'true');
+    sessionStorage.setItem('vendor_auth_query', autoSearchQuery);
+    sessionStorage.setItem('vendor_auth_is_vendor', isVendorOnly);
+    
     authGate.classList.add('hidden');
-    if (autoSearchQuery && !autoSearchQuery.includes('@')) {
-       // Only pre-fill code/name, not password or email
-       const configPass = DataService.getConfig().then(cfg => {
-         if (autoSearchQuery !== cfg.access_password) {
-           searchInput.value = autoSearchQuery;
-           doSearch();
-         }
-       });
+    _applyAuthRole(autoSearchQuery, isVendorOnly);
+  }
+
+  function _applyAuthRole(query, isVendorOnly) {
+    const searchSection = document.querySelector('.search-section');
+    if (isVendorOnly) {
+      searchSection.style.display = 'none'; // Lock search bar for vendors
+      if (query) {
+        searchInput.value = query;
+        doSearch();
+      }
+    } else {
+      searchSection.style.display = 'block'; // Internal team gets search
+      if (query && !query.includes('@')) {
+        searchInput.value = query;
+      }
     }
   }
 
